@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('User Management - Admin Console')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('users', 'admin')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Registered Candidates Management</h2>
+                        <p class="text-muted small mb-0">Search, inspect resumes, view candidate applications, edit records, or deactivate user accounts.</p>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="custom-card p-3 mb-4">
+                    <form th:action="@{/admin/users}" method="get" class="row g-2 align-items-center">
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search by name, email, username, location...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fa-solid fa-magnifying-glass me-1"></i>Search
+                            </button>
+                            <a th:href="@{/admin/users}" class="btn btn-light border">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Users Table Card -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate Name</th>
+                                    <th>Contact Details</th>
+                                    <th>Exp & Age</th>
+                                    <th>Location</th>
+                                    <th>Resume</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(users)}">
+                                    <td colspan="7" class="text-center py-5 text-muted">No candidate users found.</td>
+                                </tr>
+                                <tr th:each="user : ${users}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${user.name}">Rahul Sharma</div>
+                                        <span class="small text-muted" th:text="'@' + ${user.username}">@rahul_s</span>
+                                    </td>
+                                    <td>
+                                        <div class="small"><i class="fa-regular fa-envelope me-1 text-muted"></i><span th:text="${user.email}">rahul@example.com</span></div>
+                                        <div class="small"><i class="fa-solid fa-phone me-1 text-muted"></i><span th:text="${user.mobile}">9876543210</span></div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary" th:text="${user.experience + ' Yrs'}">3.5 Yrs</div>
+                                        <div class="small text-muted" th:text="${user.gender + ', ' + user.age + ' Yrs'}">Male, 26 Yrs</div>
+                                    </td>
+                                    <td>
+                                        <i class="fa-solid fa-location-dot text-danger me-1 small"></i>
+                                        <span th:text="${user.location}">Nagpur</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${user.resume != null}">
+                                            <a th:href="@{'/resumes/' + ${user.resume}}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                <i class="fa-solid fa-file-pdf me-1"></i>View
+                                            </a>
+                                        </div>
+                                        <span th:unless="${user.resume != null}" class="text-muted small">No file</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" th:classappend="${user.enabled ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle'}" th:text="${user.enabled ? 'Active' : 'Disabled'}">Active</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <!-- View Applications -->
+                                            <a th:href="@{'/admin/users/' + ${user.id} + '/applications'}" class="btn btn-sm btn-outline-info" title="View Candidate Applications">
+                                                <i class="fa-solid fa-file-lines"></i>
+                                            </a>
+
+                                            <!-- Edit -->
+                                            <a th:href="@{'/admin/users/' + ${user.id} + '/edit'}" class="btn btn-sm btn-outline-primary" title="Edit User">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+
+                                            <!-- Toggle Active/Deactivate -->
+                                            <form th:action="@{'/admin/users/' + ${user.id} + '/toggle'}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm" th:classappend="${user.enabled ? 'btn-outline-warning' : 'btn-outline-success'}" th:title="${user.enabled ? 'Deactivate User' : 'Activate User'}">
+                                                    <i th:class="${user.enabled ? 'fa-solid fa-ban' : 'fa-solid fa-check'}"></i>
+                                                </button>
+                                            </form>
+
+                                            <!-- Delete -->
+                                            <form th:action="@{'/admin/users/' + ${user.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to permanently delete this user?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete User">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

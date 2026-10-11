@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('My Applications - ATS')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('applications', 'user')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">My Job Applications</h2>
+                        <p class="text-muted small mb-0">Track real-time status and feedback on all your submitted job applications.</p>
+                    </div>
+                    <a th:href="@{/user/jobs}" class="btn btn-primary-custom shadow-sm rounded-pill">
+                        <i class="fa-solid fa-plus me-1"></i>Apply For More Jobs
+                    </a>
+                </div>
+
+                <!-- Applications Table Card -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Applied Date</th>
+                                    <th>Current Status</th>
+                                    <th>HR Notes / Feedback</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(applications)}">
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-file-circle-question fs-1 text-muted mb-2 d-block"></i>
+                                        You haven't submitted any job applications yet.
+                                        <div class="mt-2">
+                                            <a th:href="@{/user/jobs}" class="btn btn-sm btn-primary rounded-pill px-3">Browse Available Jobs</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:each="app : ${applications}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${app.job.jobTitle}">Java Developer</div>
+                                        <span class="badge bg-light text-secondary border small" th:text="${app.job.jobType}">Full Time</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-semibold text-dark" th:text="${app.job.companyName}">ABC Technologies</span>
+                                    </td>
+                                    <td>
+                                        <i class="fa-solid fa-location-dot text-danger me-1 small"></i>
+                                        <span th:text="${app.job.location}">Pune</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(app.applicationDate, 'dd MMMM yyyy, hh:mm a')}">10 Oct 2026</td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${app.status == 'PENDING' ? 'badge-pending' : (app.status == 'SHORTLISTED' ? 'badge-shortlisted' : (app.status == 'SELECTED' ? 'badge-selected' : 'badge-rejected'))}"
+                                              th:text="${app.status}">PENDING</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${app.notes != null and !app.notes.isEmpty()}" class="small text-muted" th:text="${app.notes}">Feedback from HR</span>
+                                        <span th:unless="${app.notes != null and !app.notes.isEmpty()}" class="small text-subtle fst-italic">Under Review</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a th:href="@{'/user/jobs/' + ${app.job.id}}" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="View Job Details">
+                                                View Job
+                                            </a>
+                                            <a th:if="${app.interview != null}" th:href="@{/user/interviews}" class="btn btn-sm btn-outline-primary rounded-pill px-3" title="View Interview Details">
+                                                <i class="fa-solid fa-calendar-check me-1"></i>Interview
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

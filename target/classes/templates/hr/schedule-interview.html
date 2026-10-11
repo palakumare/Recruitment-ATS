@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Schedule Candidate Interview - HR Portal')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('interviews', 'hr')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="mb-3">
+                    <a th:href="@{/hr/applications}" class="text-muted text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back to Applications
+                    </a>
+                </div>
+
+                <div class="custom-card shadow-sm">
+                    <div class="custom-card-header bg-white py-3">
+                        <h4 class="fw-bold mb-0 text-dark">
+                            <i class="fa-solid fa-calendar-plus me-2 text-primary"></i>Schedule Candidate Interview
+                        </h4>
+                    </div>
+
+                    <div class="custom-card-body p-4">
+                        
+                        <!-- Candidate & Job Summary Banner -->
+                        <div class="p-3 bg-light rounded-3 border mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <span class="small text-muted d-block">Candidate:</span>
+                                    <strong class="text-dark fs-6" th:text="${application.user.name}">Rahul Sharma</strong>
+                                    <div class="small text-muted" th:text="${application.user.email}">rahul@example.com</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <span class="small text-muted d-block">Applied Position:</span>
+                                    <strong class="text-primary fs-6" th:text="${application.job.jobTitle}">Java Developer</strong>
+                                    <div class="small text-muted" th:text="${application.job.companyName}">ABC Technologies</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <span class="small text-muted d-block">Candidate Experience:</span>
+                                    <strong class="text-success" th:text="${application.user.experience + ' Years'}">3.5 Years</strong>
+                                    <div class="small">
+                                        <a th:if="${application.user.resume != null}" th:href="@{'/resumes/' + ${application.user.resume}}" target="_blank" class="text-danger fw-semibold text-decoration-none">
+                                            <i class="fa-solid fa-file-pdf me-1"></i>Inspect Resume
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule Interview Form -->
+                        <form th:action="@{/hr/interviews/schedule}" th:object="${scheduleDto}" method="post">
+                            <input type="hidden" th:field="*{applicationId}">
+
+                            <div class="row g-3">
+                                <!-- Interview Date -->
+                                <div class="col-md-6">
+                                    <label for="interviewDate" class="form-label fw-semibold small text-muted">Interview Date <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{interviewDate}" id="interviewDate" class="form-control" required>
+                                    <div th:if="${#fields.hasErrors('interviewDate')}" th:errors="*{interviewDate}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Interview Time -->
+                                <div class="col-md-6">
+                                    <label for="interviewTime" class="form-label fw-semibold small text-muted">Interview Time <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{interviewTime}" id="interviewTime" class="form-control" placeholder="e.g. 11:00 AM or 02:30 PM" required>
+                                    <div th:if="${#fields.hasErrors('interviewTime')}" th:errors="*{interviewTime}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Interview Type -->
+                                <div class="col-md-6">
+                                    <label for="interviewType" class="form-label fw-semibold small text-muted">Interview Round Type <span class="text-danger">*</span></label>
+                                    <select th:field="*{interviewType}" id="interviewType" class="form-select" required>
+                                        <option value="Online Technical Round">Online Technical Round</option>
+                                        <option value="Coding Assessment & Architecture">Coding Assessment & Architecture</option>
+                                        <option value="Managerial Discussion">Managerial Discussion</option>
+                                        <option value="HR Discussion & Offer Negotiation">HR Discussion & Offer Negotiation</option>
+                                        <option value="In-person Campus Interview">In-person Campus Interview</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('interviewType')}" th:errors="*{interviewType}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Location or Meeting Link -->
+                                <div class="col-md-6">
+                                    <label for="locationOrMeetingLink" class="form-label fw-semibold small text-muted">Meeting Link or Office Location <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{locationOrMeetingLink}" id="locationOrMeetingLink" class="form-control" placeholder="e.g. https://meet.google.com/xyz-abc or TechCorp Tower, Pune" required>
+                                    <div th:if="${#fields.hasErrors('locationOrMeetingLink')}" th:errors="*{locationOrMeetingLink}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Interview Notes -->
+                                <div class="col-12">
+                                    <label for="notes" class="form-label fw-semibold small text-muted">Preparation Notes / Instructions for Candidate</label>
+                                    <textarea th:field="*{notes}" id="notes" rows="4" class="form-control" placeholder="e.g. Please be ready with your development environment for a 45-minute live coding assessment."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-top text-end">
+                                <a th:href="@{/hr/applications}" class="btn btn-outline-secondary px-3 rounded-pill me-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary-custom px-4 fw-semibold rounded-pill">
+                                    <i class="fa-solid fa-paper-plane me-2"></i>Confirm & Schedule Interview
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('My Scheduled Interviews - ATS')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('interviews', 'user')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">My Scheduled Interviews</h2>
+                        <p class="text-muted small mb-0">View all upcoming and past interviews scheduled by corporate recruiters.</p>
+                    </div>
+                </div>
+
+                <!-- Interviews Grid / Cards -->
+                <div class="row g-4">
+                    <div th:if="${#lists.isEmpty(interviews)}" class="col-12">
+                        <div class="custom-card text-center py-5">
+                            <i class="fa-solid fa-calendar-xmark text-muted fs-1 mb-3"></i>
+                            <h5 class="fw-bold">No Interviews Scheduled Yet</h5>
+                            <p class="text-muted small">When an HR recruiter shortlists your application for an interview, meeting details will immediately appear here.</p>
+                            <a th:href="@{/user/jobs}" class="btn btn-sm btn-primary rounded-pill px-4">Browse Active Openings</a>
+                        </div>
+                    </div>
+
+                    <div th:each="inv : ${interviews}" class="col-md-6 col-xl-4">
+                        <div class="custom-card h-100 shadow-sm border rounded-4 overflow-hidden">
+                            <div class="custom-card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                                <span class="badge-status badge-scheduled" th:text="${inv.status}">SCHEDULED</span>
+                                <span class="badge bg-light text-dark border small fw-semibold" th:text="${inv.interviewType}">Technical Round</span>
+                            </div>
+
+                            <div class="custom-card-body p-4">
+                                <h5 class="fw-bold text-dark mb-1" th:text="${inv.job.jobTitle}">Java Developer</h5>
+                                <div class="text-muted small fw-medium mb-3">
+                                    <i class="fa-regular fa-building me-1"></i><strong th:text="${inv.job.companyName}">ABC Technologies</strong>
+                                </div>
+
+                                <div class="p-3 bg-light rounded-3 border mb-3">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <span class="small text-muted d-block">Interview Date</span>
+                                            <strong class="text-primary" th:text="${#temporals.format(inv.interviewDate, 'dd MMMM yyyy')}">15 October 2026</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="small text-muted d-block">Time</span>
+                                            <strong class="text-dark" th:text="${inv.interviewTime}">11:00 AM</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <span class="small text-muted d-block mb-1">Meeting Link / Location:</span>
+                                    <div th:if="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}">
+                                        <a th:href="${inv.locationOrMeetingLink}" target="_blank" class="btn btn-sm btn-primary w-100 rounded-pill fw-semibold">
+                                            <i class="fa-solid fa-video me-1"></i>Join Video Meeting
+                                        </a>
+                                    </div>
+                                    <div th:unless="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}" class="p-2 bg-white rounded border small fw-semibold">
+                                        <i class="fa-solid fa-location-dot text-danger me-1"></i><span th:text="${inv.locationOrMeetingLink}">Office Campus, Pune</span>
+                                    </div>
+                                </div>
+
+                                <div th:if="${inv.notes != null and !inv.notes.isEmpty()}" class="mt-3 pt-2 border-top">
+                                    <span class="small text-muted d-block">Notes from Recruiter:</span>
+                                    <p class="small text-dark mb-0 fst-italic" th:text="${inv.notes}">Please prepare your system for live coding assessment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

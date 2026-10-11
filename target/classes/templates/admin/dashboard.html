@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Admin Dashboard - ATS Platform Control')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('dashboard', 'admin')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Admin Dual-Panel Quick Access Banner (Section 25 Requirement) -->
+                <div class="switcher-banner shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary text-white p-2 rounded-circle fs-5" style="width: 44px; height: 44px; display: grid; place-items: center;">
+                            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0 text-white">Full-Access Panel Switcher</h5>
+                            <span class="text-white-50 small">As System Administrator, you have full inspection and operational access to both candidate and recruiter portals.</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/user/dashboard}" class="btn btn-success fw-bold px-3 py-2 rounded-pill shadow-xs">
+                            <i class="fa-solid fa-user-graduate me-1"></i>Open User Panel
+                        </a>
+                        <a th:href="@{/hr/dashboard}" class="btn btn-info text-white fw-bold px-3 py-2 rounded-pill shadow-xs">
+                            <i class="fa-solid fa-building-user me-1"></i>Open HR Panel
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Welcome Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">System Administration Console</h2>
+                        <p class="text-muted small mb-0">Live aggregated statistics and governance for the Recruitment & Applicant Tracking platform.</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Aggregated Metrics Cards (Section 3 Requirement) -->
+                <div class="row g-3 mb-4">
+                    <!-- Total Users -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-subtle text-success">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.totalUsers}">4</div>
+                            <div class="stat-label">Total Registered Candidates</div>
+                        </div>
+                    </div>
+
+                    <!-- Total HR -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info-subtle text-info">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.totalHr}">4</div>
+                            <div class="stat-label">Total Corporate HR Accounts</div>
+                        </div>
+                    </div>
+
+                    <!-- Total Jobs -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary-subtle text-primary">
+                                <i class="fa-solid fa-briefcase"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.totalJobs}">7</div>
+                            <div class="stat-label">Total Jobs Posted</div>
+                        </div>
+                    </div>
+
+                    <!-- Total Applications -->
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning-subtle text-warning">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.totalApplications}">6</div>
+                            <div class="stat-label">Total Job Applications</div>
+                        </div>
+                    </div>
+
+                    <!-- Scheduled Interviews -->
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-purple-subtle text-purple" style="background-color: #ede9fe; color: #8b5cf6;">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.scheduledInterviews}">2</div>
+                            <div class="stat-label">Scheduled Interviews</div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Candidates -->
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-subtle text-success">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.selectedCandidates}">1</div>
+                            <div class="stat-label">Selected / Hired Candidates</div>
+                        </div>
+                    </div>
+
+                    <!-- Rejected Candidates -->
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-danger-subtle text-danger">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </div>
+                            <div class="stat-number" th:text="${stats.rejectedCandidates}">1</div>
+                            <div class="stat-label">Rejected Candidates</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Candidates & Recent Jobs Grid -->
+                <div class="row g-4">
+                    <!-- Recent Users -->
+                    <div class="col-lg-6">
+                        <div class="custom-card h-100">
+                            <div class="custom-card-header">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-users text-success me-2"></i>Recently Registered Candidates</h5>
+                                <a th:href="@{/admin/users}" class="small text-primary text-decoration-none fw-semibold">Manage Users &rarr;</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Location</th>
+                                            <th>Experience</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="user : ${recentUsers}">
+                                            <td>
+                                                <div class="fw-bold text-dark" th:text="${user.name}">Rahul Sharma</div>
+                                                <span class="small text-muted" th:text="${user.email}">rahul@example.com</span>
+                                            </td>
+                                            <td th:text="${user.location}">Nagpur</td>
+                                            <td th:text="${user.experience + ' Yrs'}">3.5 Yrs</td>
+                                            <td>
+                                                <span class="badge" th:classappend="${user.enabled ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}" th:text="${user.enabled ? 'Active' : 'Disabled'}">Active</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Jobs -->
+                    <div class="col-lg-6">
+                        <div class="custom-card h-100">
+                            <div class="custom-card-header">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-briefcase text-primary me-2"></i>Recent Job Postings</h5>
+                                <a th:href="@{/admin/jobs}" class="small text-primary text-decoration-none fw-semibold">Manage Jobs &rarr;</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Job Role</th>
+                                            <th>Company</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="job : ${recentJobs}">
+                                            <td class="fw-bold text-dark" th:text="${job.jobTitle}">Java Developer</td>
+                                            <td th:text="${job.companyName}">ABC Technologies</td>
+                                            <td th:text="${job.location}">Pune</td>
+                                            <td>
+                                                <span class="badge" th:classappend="${job.status == 'ACTIVE' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary'}" th:text="${job.status}">ACTIVE</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

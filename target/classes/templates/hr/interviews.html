@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Interview Schedules - HR Portal')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('interviews', 'hr')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Corporate Interview Schedules</h2>
+                        <p class="text-muted small mb-0">Track all technical, managerial, and HR discussion rounds. Candidate results sync immediately to applicant portals.</p>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="custom-card p-3 mb-4">
+                    <form th:action="@{/hr/interviews}" method="get" class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search candidate, job title, type...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <select name="status" class="form-select">
+                                <option value="">All Interview Statuses</option>
+                                <option value="SCHEDULED" th:selected="${selectedStatus == 'SCHEDULED'}">SCHEDULED</option>
+                                <option value="COMPLETED" th:selected="${selectedStatus == 'COMPLETED'}">COMPLETED</option>
+                                <option value="SELECTED" th:selected="${selectedStatus == 'SELECTED'}">SELECTED (HIRED)</option>
+                                <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">REJECTED</option>
+                                <option value="CANCELLED" th:selected="${selectedStatus == 'CANCELLED'}">CANCELLED</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fa-solid fa-filter me-1"></i>Filter
+                            </button>
+                            <a th:href="@{/hr/interviews}" class="btn btn-light border">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Interviews Table -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate</th>
+                                    <th>Job Role</th>
+                                    <th>Date & Time</th>
+                                    <th>Round Type</th>
+                                    <th>Link / Location</th>
+                                    <th>Status</th>
+                                    <th>Update Result</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(interviews)}">
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-calendar-xmark text-muted fs-1 mb-2 d-block"></i>
+                                        No interviews scheduled yet. Shortlist a candidate to schedule an interview.
+                                    </td>
+                                </tr>
+                                <tr th:each="inv : ${interviews}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${inv.candidate.name}">Rahul Sharma</div>
+                                        <div class="small text-muted" th:text="${inv.candidate.email}">rahul@example.com</div>
+                                        <div class="small text-muted" th:text="${inv.candidate.mobile}">9876543210</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark" th:text="${inv.job.jobTitle}">Java Developer</div>
+                                        <span class="small text-muted"><i class="fa-solid fa-location-dot text-danger me-1"></i><span th:text="${inv.job.location}">Pune</span></span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary" th:text="${#temporals.format(inv.interviewDate, 'dd MMMM yyyy')}">15 Oct 2026</div>
+                                        <span class="badge bg-light text-dark border small" th:text="${inv.interviewTime}">11:00 AM</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary fw-semibold" th:text="${inv.interviewType}">Technical Round</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}">
+                                            <a th:href="${inv.locationOrMeetingLink}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-2">
+                                                <i class="fa-solid fa-video me-1"></i>Open Link
+                                            </a>
+                                        </div>
+                                        <div th:unless="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}" class="small fw-semibold" th:text="${inv.locationOrMeetingLink}">
+                                            Office Campus
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${inv.status == 'SCHEDULED' ? 'badge-scheduled' : (inv.status == 'SELECTED' ? 'badge-selected' : (inv.status == 'REJECTED' ? 'badge-rejected' : 'badge-pending'))}"
+                                              th:text="${inv.status}">SCHEDULED</span>
+                                    </td>
+                                    <td>
+                                        <form th:action="@{'/hr/interviews/' + ${inv.id} + '/status'}" method="post" class="d-flex gap-1 align-items-center">
+                                            <select name="status" class="form-select form-select-sm" style="width: 130px;">
+                                                <option value="SCHEDULED" th:selected="${inv.status == 'SCHEDULED'}">SCHEDULED</option>
+                                                <option value="COMPLETED" th:selected="${inv.status == 'COMPLETED'}">COMPLETED</option>
+                                                <option value="SELECTED" th:selected="${inv.status == 'SELECTED'}">SELECTED (HIRE)</option>
+                                                <option value="REJECTED" th:selected="${inv.status == 'REJECTED'}">REJECTED</option>
+                                                <option value="CANCELLED" th:selected="${inv.status == 'CANCELLED'}">CANCELLED</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-dark" title="Save Status">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Candidate Profile - ATS')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('profile', 'user')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Candidate Profile</h2>
+                        <p class="text-muted small mb-0">View and update your personal information, experience, resume, and security credentials.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left: Profile Info Form -->
+                    <div class="col-lg-8">
+                        <div class="custom-card">
+                            <div class="custom-card-header">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-id-card me-2 text-primary"></i>Personal & Professional Details</h5>
+                            </div>
+                            <div class="custom-card-body">
+                                <form th:action="@{/user/profile}" th:object="${profileDto}" method="post">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="name" class="form-label fw-semibold small text-muted">Full Name</label>
+                                            <input type="text" th:field="*{name}" id="name" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="username" class="form-label fw-semibold small text-muted">Username</label>
+                                            <input type="text" th:field="*{username}" id="username" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label fw-semibold small text-muted">Email ID</label>
+                                            <input type="email" th:field="*{email}" id="email" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="mobile" class="form-label fw-semibold small text-muted">Mobile Number</label>
+                                            <input type="tel" th:field="*{mobile}" id="mobile" maxlength="10" pattern="[0-9]{10}" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="experience" class="form-label fw-semibold small text-muted">Experience (Years)</label>
+                                            <input type="number" step="0.5" min="0" max="40" th:field="*{experience}" id="experience" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="gender" class="form-label fw-semibold small text-muted">Gender</label>
+                                            <select th:field="*{gender}" id="gender" class="form-select" required>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="age" class="form-label fw-semibold small text-muted">Age</label>
+                                            <input type="number" min="18" max="75" th:field="*{age}" id="age" class="form-control" required>
+                                            <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="location" class="form-label fw-semibold small text-muted">Current Location</label>
+                                            <select th:field="*{location}" id="location" class="form-select" required>
+                                                <option th:each="c : ${cities}" th:value="${c}" th:text="${c}">Nagpur</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 pt-3 border-top text-end">
+                                        <button type="submit" class="btn btn-primary-custom px-4 fw-semibold rounded-pill">
+                                            <i class="fa-solid fa-floppy-disk me-2"></i>Update Profile
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Resume & Password Management -->
+                    <div class="col-lg-4">
+                        <!-- Resume Card -->
+                        <div class="custom-card mb-4">
+                            <div class="custom-card-header">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-file-pdf me-2 text-danger"></i>Resume File</h5>
+                            </div>
+                            <div class="custom-card-body">
+                                <div class="p-3 bg-light rounded-3 mb-3 border">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fa-solid fa-file-lines text-primary fs-4"></i>
+                                        <div class="overflow-hidden">
+                                            <div class="fw-bold text-truncate" th:text="${currentUser.resumeOriginalName != null ? currentUser.resumeOriginalName : 'Uploaded_Resume.pdf'}">Resume.pdf</div>
+                                            <span class="badge bg-success-subtle text-success small">Active on file</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a th:if="${currentUser.resume != null}" th:href="@{'/resumes/' + ${currentUser.resume}}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill">
+                                            <i class="fa-solid fa-eye me-1"></i>View
+                                        </a>
+                                        <a th:if="${currentUser.resume != null}" th:href="@{'/resumes/' + ${currentUser.resume}}" download class="btn btn-sm btn-outline-secondary flex-fill">
+                                            <i class="fa-solid fa-download me-1"></i>Download
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <form th:action="@{/user/profile/resume}" method="post" enctype="multipart/form-data">
+                                    <label for="resumeFile" class="form-label fw-semibold small text-muted">Replace Resume (PDF/DOC/DOCX)</label>
+                                    <input type="file" id="resumeFile" name="resumeFile" class="form-control mb-3" accept=".pdf,.doc,.docx" required>
+                                    <button type="submit" class="btn btn-outline-success btn-sm w-100 fw-semibold rounded-pill">
+                                        <i class="fa-solid fa-cloud-arrow-up me-1"></i>Upload New Resume
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Change Password Card -->
+                        <div class="custom-card">
+                            <div class="custom-card-header">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-shield-halved me-2 text-warning"></i>Change Password</h5>
+                            </div>
+                            <div class="custom-card-body">
+                                <form th:action="@{/user/profile/password}" th:object="${passwordDto}" method="post">
+                                    <div class="mb-3">
+                                        <label for="currentPassword" class="form-label fw-semibold small text-muted">Current Password</label>
+                                        <input type="password" th:field="*{currentPassword}" id="currentPassword" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label fw-semibold small text-muted">New Password</label>
+                                        <input type="password" th:field="*{newPassword}" id="newPassword" minlength="6" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmNewPassword" class="form-label fw-semibold small text-muted">Confirm New Password</label>
+                                        <input type="password" th:field="*{confirmNewPassword}" id="confirmNewPassword" minlength="6" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm w-100 fw-semibold rounded-pill">
+                                        <i class="fa-solid fa-key me-1"></i>Update Password
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

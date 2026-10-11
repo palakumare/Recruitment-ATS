@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Edit Job - Admin Console')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('jobs', 'admin')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="mb-3">
+                    <a th:href="@{/admin/jobs}" class="text-muted text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back to Jobs List
+                    </a>
+                </div>
+
+                <div class="custom-card shadow-sm">
+                    <div class="custom-card-header bg-white py-3">
+                        <h4 class="fw-bold mb-0 text-dark">
+                            <i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Admin Job Edit
+                        </h4>
+                    </div>
+
+                    <div class="custom-card-body p-4">
+                        <form th:action="@{'/admin/jobs/' + ${job.id} + '/edit'}" th:object="${jobDto}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="jobTitle" class="form-label fw-semibold small text-muted">Job Title</label>
+                                    <input type="text" th:field="*{jobTitle}" id="jobTitle" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="companyName" class="form-label fw-semibold small text-muted">Company Name</label>
+                                    <input type="text" th:field="*{companyName}" id="companyName" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="jobType" class="form-label fw-semibold small text-muted">Job Type</label>
+                                    <select th:field="*{jobType}" id="jobType" class="form-select" required>
+                                        <option value="Full Time">Full Time</option>
+                                        <option value="Part Time">Part Time</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Internship">Internship</option>
+                                        <option value="Remote">Remote</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="location" class="form-label fw-semibold small text-muted">Location / City</label>
+                                    <select th:field="*{location}" id="location" class="form-select" required>
+                                        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}">Pune</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="experienceRequired" class="form-label fw-semibold small text-muted">Experience Required</label>
+                                    <input type="text" th:field="*{experienceRequired}" id="experienceRequired" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="salary" class="form-label fw-semibold small text-muted">Salary Range</label>
+                                    <input type="text" th:field="*{salary}" id="salary" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="openings" class="form-label fw-semibold small text-muted">Openings</label>
+                                    <input type="number" min="1" max="100" th:field="*{openings}" id="openings" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="status" class="form-label fw-semibold small text-muted">Job Status</label>
+                                    <select th:field="*{status}" id="status" class="form-select" required>
+                                        <option value="ACTIVE">ACTIVE</option>
+                                        <option value="CLOSED">CLOSED</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="deadline" class="form-label fw-semibold small text-muted">Deadline</label>
+                                    <input type="date" th:field="*{deadline}" id="deadline" class="form-control" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="qualification" class="form-label fw-semibold small text-muted">Qualification</label>
+                                    <input type="text" th:field="*{qualification}" id="qualification" class="form-control" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="requiredSkills" class="form-label fw-semibold small text-muted">Required Skills</label>
+                                    <input type="text" th:field="*{requiredSkills}" id="requiredSkills" class="form-control" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="description" class="form-label fw-semibold small text-muted">Job Description</label>
+                                    <textarea th:field="*{description}" id="description" rows="5" class="form-control" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-top text-end">
+                                <a th:href="@{/admin/jobs}" class="btn btn-outline-secondary px-3 rounded-pill me-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary-custom px-4 fw-semibold rounded-pill">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Save Job
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Applications Management - HR Portal')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('applications', 'hr')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Inbound Job Applications</h2>
+                        <p class="text-muted small mb-0">Track total applications received across each job role and manage individual hiring decisions.</p>
+                    </div>
+                </div>
+
+                <!-- Job-Wise Application Summary Badges -->
+                <div class="row g-3 mb-4">
+                    <div th:each="job : ${hrJobs}" class="col-md-6 col-lg-4">
+                        <div class="custom-card p-3 h-100 border rounded-3 bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold text-dark" th:text="${job.jobTitle}">Java Developer</div>
+                                    <span class="small text-muted" th:text="${currentHr.companyName}">ABC Technologies</span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill" th:text="${#lists.size(job.applications) + ' Apps'}">25 Apps</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="custom-card p-3 mb-4">
+                    <form th:action="@{/hr/applications}" method="get" class="row g-2 align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Candidate name, email...">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">PENDING</option>
+                                <option value="SHORTLISTED" th:selected="${selectedStatus == 'SHORTLISTED'}">SHORTLISTED</option>
+                                <option value="SELECTED" th:selected="${selectedStatus == 'SELECTED'}">SELECTED</option>
+                                <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">REJECTED</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="jobId" class="form-select">
+                                <option value="">Filter by Job</option>
+                                <option th:each="j : ${hrJobs}" th:value="${j.id}" th:text="${j.jobTitle}" th:selected="${selectedJobId == j.id}">Java Developer</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fa-solid fa-filter me-1"></i>Filter
+                            </button>
+                            <a th:href="@{/hr/applications}" class="btn btn-light border">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Applications Table -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate</th>
+                                    <th>Job Role</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Resume</th>
+                                    <th>Hiring Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(applications)}">
+                                    <td colspan="6" class="text-center py-5 text-muted">No applications matching current filters.</td>
+                                </tr>
+                                <tr th:each="app : ${applications}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${app.user.name}">Rahul Sharma</div>
+                                        <span class="small text-muted" th:text="${app.user.email}">rahul@example.com</span>
+                                        <div class="small text-muted" th:text="${app.user.mobile}">9876543210</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark" th:text="${app.job.jobTitle}">Java Developer</div>
+                                        <span class="small text-muted"><i class="fa-solid fa-location-dot text-danger me-1"></i><span th:text="${app.job.location}">Pune</span></span>
+                                    </td>
+                                    <td th:text="${#temporals.format(app.applicationDate, 'dd MMMM yyyy, hh:mm a')}">10 Oct 2026</td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${app.status == 'PENDING' ? 'badge-pending' : (app.status == 'SHORTLISTED' ? 'badge-shortlisted' : (app.status == 'SELECTED' ? 'badge-selected' : 'badge-rejected'))}"
+                                              th:text="${app.status}">PENDING</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${app.user.resume != null}">
+                                            <a th:href="@{'/resumes/' + ${app.user.resume}}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                <i class="fa-solid fa-file-pdf me-1"></i>View
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <!-- Shortlist -->
+                                            <form th:action="@{'/hr/applications/' + ${app.id} + '/status'}" method="post" class="d-inline">
+                                                <input type="hidden" name="status" value="SHORTLISTED">
+                                                <button type="submit" class="btn btn-sm btn-outline-primary" th:disabled="${app.status == 'SHORTLISTED'}" title="Shortlist">
+                                                    <i class="fa-solid fa-user-check"></i> Shortlist
+                                                </button>
+                                            </form>
+
+                                            <!-- Schedule Interview -->
+                                            <a th:href="@{'/hr/interviews/schedule?applicationId=' + ${app.id}}" class="btn btn-sm btn-purple" style="background-color: #8b5cf6; color: #fff;" title="Schedule Interview">
+                                                <i class="fa-solid fa-calendar-plus"></i> Interview
+                                            </a>
+
+                                            <!-- Select -->
+                                            <form th:action="@{'/hr/applications/' + ${app.id} + '/status'}" method="post" class="d-inline">
+                                                <input type="hidden" name="status" value="SELECTED">
+                                                <button type="submit" class="btn btn-sm btn-outline-success" th:disabled="${app.status == 'SELECTED'}" title="Select">
+                                                    <i class="fa-solid fa-check"></i> Select
+                                                </button>
+                                            </form>
+
+                                            <!-- Reject -->
+                                            <form th:action="@{'/hr/applications/' + ${app.id} + '/status'}" method="post" class="d-inline">
+                                                <input type="hidden" name="status" value="REJECTED">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" th:disabled="${app.status == 'REJECTED'}" title="Reject">
+                                                    <i class="fa-solid fa-xmark"></i> Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

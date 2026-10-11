@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Login - Recruitment and Applicant Tracking System')}"></head>
+<body class="bg-light">
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="container my-auto py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5 col-xl-4">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="custom-card-header bg-white text-center py-4 border-bottom-0 pb-0">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle p-3 shadow-sm mb-3">
+                            <i class="fa-solid fa-lock fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-1">Account Login</h3>
+                        <p class="text-muted small">Sign in to access your dashboard</p>
+                    </div>
+
+                    <div class="custom-card-body p-4 pt-3">
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold small text-muted">Username or Email ID</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-regular fa-envelope"></i></span>
+                                    <input type="text" class="form-control bg-light border-start-0" id="username" name="username" placeholder="name@example.com or username" required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label for="password" class="form-label fw-semibold small text-muted m-0">Password</label>
+                                    <a href="javascript:void(0)" onclick="alert('For demo accounts, use password:\nAdmin: admin123\nHR: hr123\nUser: user123')" class="small text-primary text-decoration-none">Forgot password?</a>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-key"></i></span>
+                                    <input type="password" class="form-control bg-light border-start-0" id="password" name="password" placeholder="••••••••" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-bold rounded-3 shadow-sm mb-3">
+                                <i class="fa-solid fa-right-to-bracket me-2"></i>Sign In
+                            </button>
+                        </form>
+
+                        <div class="text-center pt-3 border-top">
+                            <div class="small text-muted mb-2">Don't have an account yet?</div>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a th:href="@{/register-user}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold px-3">
+                                    <i class="fa-solid fa-user-plus me-1"></i>Candidate Register
+                                </a>
+                                <a th:href="@{/register-hr}" class="btn btn-sm btn-outline-info rounded-pill fw-semibold px-3">
+                                    <i class="fa-solid fa-building-user me-1"></i>HR Register
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- One-Click Quick Login Demo Chips -->
+                        <div class="mt-4 p-3 bg-light rounded-3 border">
+                            <div class="small fw-bold text-dark mb-2 text-center text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                                Quick Test Demo Credentials
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-sm btn-white border bg-white text-start d-flex justify-content-between align-items-center" onclick="fillLogin('admin@ats.com', 'admin123')">
+                                    <span><i class="fa-solid fa-shield-halved text-primary me-2"></i><strong>Admin</strong> (admin@ats.com)</span>
+                                    <span class="badge bg-primary-subtle text-primary">Fill</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border bg-white text-start d-flex justify-content-between align-items-center" onclick="fillLogin('hr.techcorp@ats.com', 'hr123')">
+                                    <span><i class="fa-solid fa-building-user text-info me-2"></i><strong>HR</strong> (hr.techcorp@ats.com)</span>
+                                    <span class="badge bg-info-subtle text-info">Fill</span>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border bg-white text-start d-flex justify-content-between align-items-center" onclick="fillLogin('rahul.sharma@example.com', 'user123')">
+                                    <span><i class="fa-solid fa-user-graduate text-success me-2"></i><strong>Candidate</strong> (rahul.sharma)</span>
+                                    <span class="badge bg-success-subtle text-success">Fill</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+    <script>
+        function fillLogin(user, pass) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+        }
+    </script>
+</body>
+</html>

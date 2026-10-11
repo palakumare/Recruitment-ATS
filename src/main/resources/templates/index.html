@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Recruitment and Applicant Tracking System - Find Your Dream Career')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-9 col-xl-8">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold mb-3">
+                        <i class="fa-solid fa-sparkles me-1"></i> Enterprise Career & Hiring Platform
+                    </span>
+                    <h1 class="display-4 fw-extrabold text-dark mb-3">
+                        Recruitment and Applicant <span class="text-gradient">Tracking System</span>
+                    </h1>
+                    <p class="lead text-muted mb-4 px-md-4">
+                        Connect talented candidates with the right opportunities. Streamline your hiring pipeline from job posting and resume evaluation to automated interview scheduling.
+                    </p>
+
+                    <!-- Primary Action Buttons -->
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                        <a th:href="@{/login}" class="btn btn-primary btn-lg px-4 py-2 fw-bold shadow-sm rounded-pill">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i>Login to Portal
+                        </a>
+                        <a th:href="@{/register-user}" class="btn btn-success btn-lg px-4 py-2 fw-bold shadow-sm rounded-pill">
+                            <i class="fa-solid fa-user-plus me-2"></i>Candidate Registration
+                        </a>
+                        <a th:href="@{/register-hr}" class="btn btn-info text-white btn-lg px-4 py-2 fw-bold shadow-sm rounded-pill">
+                            <i class="fa-solid fa-building-user me-2"></i>HR Registration
+                        </a>
+                        <a th:href="@{/login}" class="btn btn-outline-dark btn-lg px-4 py-2 fw-bold rounded-pill">
+                            <i class="fa-solid fa-shield-halved me-2"></i>Admin Access
+                        </a>
+                    </div>
+
+                    <!-- Highlight Cities -->
+                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 pt-2">
+                        <span class="text-muted small fw-semibold me-2"><i class="fa-solid fa-location-dot text-primary me-1"></i>Hiring Hubs:</span>
+                        <span th:each="city : ${featuredCities}" class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-xs fw-semibold">
+                            <span th:text="${city}">Nagpur</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Roles Feature Highlights -->
+    <section class="py-5 bg-white border-bottom">
+        <div class="container py-3">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">A Unified Ecosystem for Modern Hiring</h2>
+                <p class="text-muted">Designed for Candidates, HR Recruiters, and System Administrators.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- User Panel -->
+                <div class="col-md-4">
+                    <div class="custom-card h-100 p-4 border rounded-4 text-center">
+                        <div class="stat-icon bg-success-subtle text-success mx-auto mb-3" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-user-graduate fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Applicants & Candidates</h4>
+                        <p class="text-muted small mb-4">Browse verified job openings across top tech hubs, submit applications with resume attachments, and track interviews in real-time.</p>
+                        <a th:href="@{/register-user}" class="btn btn-outline-success rounded-pill fw-semibold w-100 mt-auto">
+                            Join as Candidate <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- HR Panel -->
+                <div class="col-md-4">
+                    <div class="custom-card h-100 p-4 border rounded-4 text-center">
+                        <div class="stat-icon bg-info-subtle text-info mx-auto mb-3" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-building-circle-check fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">HR & Recruiters</h4>
+                        <p class="text-muted small mb-4">Post new job requisitions, evaluate candidate profiles & resumes, shortlist applicants, and schedule automated technical interviews.</p>
+                        <a th:href="@{/register-hr}" class="btn btn-outline-info rounded-pill fw-semibold w-100 mt-auto">
+                            Post Jobs & Hire <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Admin Panel -->
+                <div class="col-md-4">
+                    <div class="custom-card h-100 p-4 border rounded-4 text-center">
+                        <div class="stat-icon bg-primary-subtle text-primary mx-auto mb-3" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-shield-halved fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Admin Governance</h4>
+                        <p class="text-muted small mb-4">Complete platform oversight with user management, HR compliance, job review, application tracking, and direct access to both panels.</p>
+                        <a th:href="@{/login}" class="btn btn-outline-primary rounded-pill fw-semibold w-100 mt-auto">
+                            Admin Login <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Active Opportunities Section -->
+    <section class="py-5 bg-light">
+        <div class="container py-3">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h3 class="fw-bold m-0">Featured Job Openings</h3>
+                    <p class="text-muted small m-0">Explore opportunities live in Nagpur, Pune, Hyderabad, Mumbai and more</p>
+                </div>
+                <a th:href="@{/login}" class="btn btn-outline-primary rounded-pill fw-semibold px-4">
+                    View All Openings <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="row g-4">
+                <div th:each="job : ${recentJobs}" class="col-md-6 col-lg-4">
+                    <div class="job-card shadow-xs">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary-subtle text-primary fw-bold" th:text="${job.jobType}">Full Time</span>
+                                <span class="text-success fw-bold small" th:text="${job.salary}">₹ 8-12 LPA</span>
+                            </div>
+                            <h5 class="fw-bold mb-1 text-dark" th:text="${job.jobTitle}">Java Developer</h5>
+                            <div class="text-muted small fw-medium mb-3">
+                                <i class="fa-regular fa-building me-1"></i><span th:text="${job.companyName}">ABC Technologies</span>
+                                &bull; <i class="fa-solid fa-location-dot text-danger me-1"></i><span th:text="${job.location}">Pune</span>
+                            </div>
+                            <p class="text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" th:text="${job.description}">
+                                Enterprise development position using Spring Boot and microservices.
+                            </p>
+                            <div class="mb-3">
+                                <span class="skill-tag" th:each="skill : ${#strings.arraySplit(job.requiredSkills, ',')}" th:text="${#strings.trim(skill)}">Spring Boot</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">
+                                <i class="fa-regular fa-clock me-1"></i>Exp: <strong th:text="${job.experienceRequired}">2-5 Yrs</strong>
+                            </span>
+                            <a th:href="@{/login}" class="btn btn-primary btn-sm px-3 fw-semibold rounded-pill">
+                                Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-auto">
+        <div class="container text-center">
+            <div class="mb-2">
+                <span class="fw-bold fs-5 tracking-tight">Recruit<span class="text-primary">ATS</span></span>
+                <span class="text-muted small ms-2">| Enterprise Recruitment & Applicant Tracking System</span>
+            </div>
+            <p class="text-secondary small mb-0">Built with Spring Boot 3, Spring Data JPA, Spring Security, MySQL, and Modern Responsive UI.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

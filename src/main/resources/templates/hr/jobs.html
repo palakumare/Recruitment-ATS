@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Manage Job Postings - HR Portal')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('jobs', 'hr')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Company Job Postings</h2>
+                        <p class="text-muted small mb-0">Create, edit, activate, close, and manage positions posted for <strong th:text="${currentHr.companyName}">Company</strong>.</p>
+                    </div>
+                    <a th:href="@{/hr/jobs/new}" class="btn btn-primary-custom shadow-sm rounded-pill">
+                        <i class="fa-solid fa-plus me-1"></i>Post New Job
+                    </a>
+                </div>
+
+                <!-- Jobs Table Card -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Location</th>
+                                    <th>Experience</th>
+                                    <th>Salary</th>
+                                    <th>Openings</th>
+                                    <th>Deadline</th>
+                                    <th>Status</th>
+                                    <th>Applicants</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(jobs)}">
+                                    <td colspan="9" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-briefcase text-muted fs-1 mb-2 d-block"></i>
+                                        No job postings created yet.
+                                        <div class="mt-2">
+                                            <a th:href="@{/hr/jobs/new}" class="btn btn-sm btn-primary rounded-pill px-3">Post Your First Job</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:each="job : ${jobs}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${job.jobTitle}">Java Developer</div>
+                                        <span class="badge bg-light text-secondary border small" th:text="${job.jobType}">Full Time</span>
+                                    </td>
+                                    <td><i class="fa-solid fa-location-dot text-danger me-1 small"></i><span th:text="${job.location}">Pune</span></td>
+                                    <td th:text="${job.experienceRequired}">2 - 5 Yrs</td>
+                                    <td class="text-success fw-semibold" th:text="${job.salary}">₹ 8 - 14 LPA</td>
+                                    <td>
+                                        <span class="badge bg-info-subtle text-info fw-bold" th:text="${job.openings}">4</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(job.deadline, 'dd MMM yyyy')}">15 Nov 2026</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${job.status == 'ACTIVE' ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle'}"
+                                              th:text="${job.status}">ACTIVE</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{'/hr/applications?jobId=' + ${job.id}}" class="badge bg-primary text-decoration-none px-3 py-2 rounded-pill">
+                                            <i class="fa-solid fa-users me-1"></i><span th:text="${#lists.size(job.applications)}">3</span> Applicants
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <!-- Edit -->
+                                            <a th:href="@{'/hr/jobs/' + ${job.id} + '/edit'}" class="btn btn-sm btn-outline-primary" title="Edit Job">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+
+                                            <!-- Toggle Status (Activate / Close) -->
+                                            <form th:action="@{'/hr/jobs/' + ${job.id} + '/toggle'}" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm" th:classappend="${job.status == 'ACTIVE' ? 'btn-outline-warning' : 'btn-outline-success'}" th:title="${job.status == 'ACTIVE' ? 'Close Job' : 'Activate Job'}">
+                                                    <i th:class="${job.status == 'ACTIVE' ? 'fa-solid fa-pause' : 'fa-solid fa-play'}"></i>
+                                                </button>
+                                            </form>
+
+                                            <!-- Delete -->
+                                            <form th:action="@{'/hr/jobs/' + ${job.id} + '/delete'}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this job posting?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Job">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

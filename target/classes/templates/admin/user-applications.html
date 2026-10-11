@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Candidate Applications - Admin Console')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('users', 'admin')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="mb-3">
+                    <a th:href="@{/admin/users}" class="text-muted text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back to Users List
+                    </a>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">
+                            Applications Submitted by <span class="text-primary" th:text="${user.name}">Rahul Sharma</span>
+                        </h2>
+                        <p class="text-muted small mb-0">Candidate Email: <span th:text="${user.email}">rahul@example.com</span> &bull; Mobile: <span th:text="${user.mobile}">9876543210</span></p>
+                    </div>
+                    <div th:if="${user.resume != null}">
+                        <a th:href="@{'/resumes/' + ${user.resume}}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-file-pdf me-1"></i>Inspect Resume
+                        </a>
+                    </div>
+                </div>
+
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Role</th>
+                                    <th>Company</th>
+                                    <th>Location</th>
+                                    <th>Applied Date</th>
+                                    <th>Application Status</th>
+                                    <th>Interview Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(applications)}">
+                                    <td colspan="6" class="text-center py-5 text-muted">This candidate has not applied for any jobs yet.</td>
+                                </tr>
+                                <tr th:each="app : ${applications}">
+                                    <td class="fw-bold text-dark" th:text="${app.job.jobTitle}">Java Developer</td>
+                                    <td th:text="${app.job.companyName}">ABC Technologies</td>
+                                    <td><i class="fa-solid fa-location-dot text-danger me-1 small"></i><span th:text="${app.job.location}">Pune</span></td>
+                                    <td th:text="${#temporals.format(app.applicationDate, 'dd MMMM yyyy, hh:mm a')}">10 Oct 2026</td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${app.status == 'PENDING' ? 'badge-pending' : (app.status == 'SHORTLISTED' ? 'badge-shortlisted' : (app.status == 'SELECTED' ? 'badge-selected' : 'badge-rejected'))}"
+                                              th:text="${app.status}">PENDING</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${app.interview != null}" class="badge-status badge-scheduled" th:text="${app.interview.status}">SCHEDULED</span>
+                                        <span th:unless="${app.interview != null}" class="text-muted small">Not Scheduled</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

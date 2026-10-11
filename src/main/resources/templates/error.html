@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Error - ATS System')}"></head>
+<body class="bg-light d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="container text-center py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="custom-card p-5 border-0 shadow-lg rounded-4">
+                    <div class="mb-4">
+                        <span class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle p-4" style="width: 80px; height: 80px;">
+                            <i class="fa-solid fa-triangle-exclamation fs-1"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-2">Notice</h3>
+                    <p class="text-muted mb-4" th:text="${errorMessage != null ? errorMessage : 'The requested page or action could not be processed.'}">
+                        An error occurred while processing your request.
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="fa-solid fa-arrow-left me-1"></i>Go Back
+                        </a>
+                        <a th:href="@{/}" class="btn btn-primary-custom rounded-pill px-4">
+                            <i class="fa-solid fa-house me-1"></i>Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

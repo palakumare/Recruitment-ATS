@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Post New Job - HR Portal')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('jobs', 'hr')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="mb-3">
+                    <a th:href="@{/hr/jobs}" class="text-muted text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back to My Jobs
+                    </a>
+                </div>
+
+                <div class="custom-card shadow-sm">
+                    <div class="custom-card-header bg-white py-3">
+                        <h4 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-file-circle-plus me-2 text-primary"></i>Post New Job Requisition</h4>
+                    </div>
+
+                    <div class="custom-card-body p-4">
+                        <form th:action="@{/hr/jobs/new}" th:object="${jobDto}" method="post">
+                            <div class="row g-3">
+                                <!-- Job Title -->
+                                <div class="col-md-6">
+                                    <label for="jobTitle" class="form-label fw-semibold small text-muted">Job Title <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{jobTitle}" id="jobTitle" class="form-control" placeholder="e.g. Senior Java Developer" required>
+                                    <div th:if="${#fields.hasErrors('jobTitle')}" th:errors="*{jobTitle}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Company Name -->
+                                <div class="col-md-6">
+                                    <label for="companyName" class="form-label fw-semibold small text-muted">Company Name <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{companyName}" id="companyName" class="form-control" required>
+                                    <div th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Job Type -->
+                                <div class="col-md-4">
+                                    <label for="jobType" class="form-label fw-semibold small text-muted">Job Type <span class="text-danger">*</span></label>
+                                    <select th:field="*{jobType}" id="jobType" class="form-select" required>
+                                        <option value="Full Time">Full Time</option>
+                                        <option value="Part Time">Part Time</option>
+                                        <option value="Contract">Contract</option>
+                                        <option value="Internship">Internship</option>
+                                        <option value="Remote">Remote</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Location -->
+                                <div class="col-md-4">
+                                    <label for="location" class="form-label fw-semibold small text-muted">Location / City <span class="text-danger">*</span></label>
+                                    <select th:field="*{location}" id="location" class="form-select" required>
+                                        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}">Pune</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Experience Required -->
+                                <div class="col-md-4">
+                                    <label for="experienceRequired" class="form-label fw-semibold small text-muted">Experience Required <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{experienceRequired}" id="experienceRequired" class="form-control" placeholder="e.g. 2 - 5 Years" required>
+                                    <div th:if="${#fields.hasErrors('experienceRequired')}" th:errors="*{experienceRequired}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Salary/CTC -->
+                                <div class="col-md-4">
+                                    <label for="salary" class="form-label fw-semibold small text-muted">Salary / CTC Range <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{salary}" id="salary" class="form-control" placeholder="e.g. ₹ 8,00,000 - ₹ 14,00,000 P.A." required>
+                                    <div th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Openings -->
+                                <div class="col-md-4">
+                                    <label for="openings" class="form-label fw-semibold small text-muted">Number of Openings <span class="text-danger">*</span></label>
+                                    <input type="number" min="1" max="100" th:field="*{openings}" id="openings" class="form-control" placeholder="e.g. 3" required>
+                                    <div th:if="${#fields.hasErrors('openings')}" th:errors="*{openings}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Deadline -->
+                                <div class="col-md-4">
+                                    <label for="deadline" class="form-label fw-semibold small text-muted">Application Deadline <span class="text-danger">*</span></label>
+                                    <input type="date" th:field="*{deadline}" id="deadline" class="form-control" required>
+                                    <div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Qualification -->
+                                <div class="col-12">
+                                    <label for="qualification" class="form-label fw-semibold small text-muted">Educational Qualification <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{qualification}" id="qualification" class="form-control" placeholder="e.g. B.Tech / B.E / MCA in Computer Science" required>
+                                    <div th:if="${#fields.hasErrors('qualification')}" th:errors="*{qualification}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Required Skills -->
+                                <div class="col-12">
+                                    <label for="requiredSkills" class="form-label fw-semibold small text-muted">Required Skills (Comma separated) <span class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{requiredSkills}" id="requiredSkills" class="form-control" placeholder="e.g. Java, Spring Boot, MySQL, REST API, Docker" required>
+                                    <div th:if="${#fields.hasErrors('requiredSkills')}" th:errors="*{requiredSkills}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-12">
+                                    <label for="description" class="form-label fw-semibold small text-muted">Job Description <span class="text-danger">*</span></label>
+                                    <textarea th:field="*{description}" id="description" rows="5" class="form-control" placeholder="Provide detailed roles, responsibilities, and team expectations..." required></textarea>
+                                    <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger small mt-1"></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-top text-end">
+                                <a th:href="@{/hr/jobs}" class="btn btn-outline-secondary px-3 rounded-pill me-2">Cancel</a>
+                                <button type="submit" class="btn btn-primary-custom px-4 fw-semibold rounded-pill">
+                                    <i class="fa-solid fa-check me-2"></i>Publish Job Requisition
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

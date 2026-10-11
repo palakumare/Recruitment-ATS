@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Interview Schedules - Admin Console')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('interviews', 'admin')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="fw-bold mb-1">Global Interview Management</h2>
+                        <p class="text-muted small mb-0">Platform-wide governance of scheduled interview rounds, meeting coordinates, and selection decisions.</p>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="custom-card p-3 mb-4">
+                    <form th:action="@{/admin/interviews}" method="get" class="row g-2 align-items-center">
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Search by candidate name, job title, company, type...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex gap-1">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fa-solid fa-magnifying-glass me-1"></i>Search
+                            </button>
+                            <a th:href="@{/admin/interviews}" class="btn btn-light border">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Interviews Table Card -->
+                <div class="custom-card">
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate</th>
+                                    <th>Job Role</th>
+                                    <th>Company</th>
+                                    <th>Interview Date & Time</th>
+                                    <th>Round Type</th>
+                                    <th>Interview Status</th>
+                                    <th>Selection Status</th>
+                                    <th>Meeting Link / Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(interviews)}">
+                                    <td colspan="8" class="text-center py-5 text-muted">No scheduled interviews found.</td>
+                                </tr>
+                                <tr th:each="inv : ${interviews}">
+                                    <td>
+                                        <div class="fw-bold text-dark" th:text="${inv.candidate.name}">Rahul Sharma</div>
+                                        <span class="small text-muted" th:text="${inv.candidate.email}">rahul@example.com</span>
+                                    </td>
+                                    <td class="fw-semibold text-dark" th:text="${inv.job.jobTitle}">Java Developer</td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border fw-bold" th:text="${inv.job.companyName}">ABC Technologies</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-primary" th:text="${#temporals.format(inv.interviewDate, 'dd MMMM yyyy')}">15 Oct 2026</div>
+                                        <span class="badge bg-light text-dark border small" th:text="${inv.interviewTime}">11:00 AM</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary fw-semibold" th:text="${inv.interviewType}">Technical Round</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${inv.status == 'SCHEDULED' ? 'badge-scheduled' : (inv.status == 'SELECTED' ? 'badge-selected' : (inv.status == 'REJECTED' ? 'badge-rejected' : 'badge-pending'))}"
+                                              th:text="${inv.status}">SCHEDULED</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${inv.application.status == 'SELECTED' ? 'bg-success text-white' : (inv.application.status == 'REJECTED' ? 'bg-danger text-white' : 'bg-secondary-subtle text-secondary')}"
+                                              th:text="${inv.application.status}">SHORTLISTED</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}">
+                                            <a th:href="${inv.locationOrMeetingLink}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-2">
+                                                <i class="fa-solid fa-video me-1"></i>Link
+                                            </a>
+                                        </div>
+                                        <div th:unless="${#strings.startsWith(inv.locationOrMeetingLink, 'http')}" class="small" th:text="${inv.locationOrMeetingLink}">
+                                            Office Location
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

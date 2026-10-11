@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('HR Registration - Recruitment and Applicant Tracking System')}"></head>
+<body class="bg-light">
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="custom-card-header bg-white py-4 border-bottom text-center">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-info text-white rounded-circle p-3 shadow-sm mb-2">
+                            <i class="fa-solid fa-building-user fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-1">HR Recruiter Registration</h3>
+                        <p class="text-muted small mb-0">Register your organization to post job openings and discover top engineering talent</p>
+                    </div>
+
+                    <div class="custom-card-body p-4 p-md-5">
+                        <form th:action="@{/register-hr}" th:object="${hrDto}" method="post">
+                            
+                            <div class="row g-3">
+                                <!-- Full Name -->
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label fw-semibold small text-muted">Full Name <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-regular fa-user"></i></span>
+                                        <input type="text" th:field="*{name}" id="name" class="form-control" placeholder="e.g. Pooja Kulkarni" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Username -->
+                                <div class="col-md-6">
+                                    <label for="username" class="form-label fw-semibold small text-muted">Username <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-at"></i></span>
+                                        <input type="text" th:field="*{username}" id="username" class="form-control" placeholder="e.g. pooja_hr" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Email ID -->
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-semibold small text-muted">Official Email ID <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-regular fa-envelope"></i></span>
+                                        <input type="email" th:field="*{email}" id="email" class="form-control" placeholder="e.g. hr@company.com" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Mobile Number -->
+                                <div class="col-md-6">
+                                    <label for="mobile" class="form-label fw-semibold small text-muted">Mobile Number (10 Digits) <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-phone"></i></span>
+                                        <input type="tel" th:field="*{mobile}" id="mobile" maxlength="10" pattern="[0-9]{10}" class="form-control" placeholder="e.g. 9876543210" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Company Name -->
+                                <div class="col-md-6">
+                                    <label for="companyName" class="form-label fw-semibold small text-muted">Company Name <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-regular fa-building"></i></span>
+                                        <input type="text" th:field="*{companyName}" id="companyName" class="form-control" placeholder="e.g. TechCorp Solutions" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Gender -->
+                                <div class="col-md-3">
+                                    <label for="gender" class="form-label fw-semibold small text-muted">Gender <span class="text-danger">*</span></label>
+                                    <select th:field="*{gender}" id="gender" class="form-select" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Location -->
+                                <div class="col-md-3">
+                                    <label for="location" class="form-label fw-semibold small text-muted">Location / City <span class="text-danger">*</span></label>
+                                    <select th:field="*{location}" id="location" class="form-select" required>
+                                        <option value="">-- Select --</option>
+                                        <option th:each="c : ${cities}" th:value="${c}" th:text="${c}">Pune</option>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="col-md-6">
+                                    <label for="password" class="form-label fw-semibold small text-muted">Password <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" th:field="*{password}" id="password" minlength="6" class="form-control" placeholder="Min 6 characters" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger small mt-1"></div>
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div class="col-md-6">
+                                    <label for="confirmPassword" class="form-label fw-semibold small text-muted">Re-enter Password <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fa-solid fa-lock"></i></span>
+                                        <input type="password" th:field="*{confirmPassword}" id="confirmPassword" minlength="6" class="form-control" placeholder="Re-type password" required>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger small mt-1"></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-info text-white w-100 py-2 fw-bold rounded-3 shadow-sm">
+                                    <i class="fa-solid fa-check me-2"></i>Complete HR Registration
+                                </button>
+                            </div>
+
+                            <div class="text-center mt-3 small text-muted">
+                                Already registered as HR? <a th:href="@{/login}" class="text-info fw-semibold text-decoration-none">Sign in here</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>

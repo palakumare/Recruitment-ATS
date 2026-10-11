@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: common-header('Job Details & Application - ATS')}"></head>
+<body>
+
+    <!-- Top Navigation -->
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: sidebar('jobs', 'user')}"></div>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            <div class="container-fluid p-0">
+                
+                <!-- Feedback Alerts -->
+                <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+                <div class="mb-3">
+                    <a th:href="@{/user/jobs}" class="text-muted text-decoration-none small">
+                        <i class="fa-solid fa-arrow-left me-1"></i>Back to Available Jobs
+                    </a>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left: Job Details -->
+                    <div class="col-lg-7">
+                        <div class="custom-card">
+                            <div class="custom-card-header bg-white py-3">
+                                <div>
+                                    <span class="badge bg-primary-subtle text-primary mb-1 fw-bold" th:text="${job.jobType}">Full Time</span>
+                                    <h4 class="fw-bold mb-0 text-dark" th:text="${job.jobTitle}">Java Developer</h4>
+                                    <span class="text-muted small"><i class="fa-regular fa-building me-1"></i><strong th:text="${job.companyName}">ABC Technologies</strong></span>
+                                </div>
+                                <span class="badge bg-success-subtle text-success fs-6 fw-bold" th:text="${job.salary}">₹ 8 - 14 LPA</span>
+                            </div>
+
+                            <div class="custom-card-body p-4">
+                                <div class="row g-3 mb-4 pb-3 border-bottom">
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Location</div>
+                                        <div class="fw-bold"><i class="fa-solid fa-location-dot text-danger me-1"></i><span th:text="${job.location}">Pune</span></div>
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Experience Required</div>
+                                        <div class="fw-bold"><i class="fa-solid fa-briefcase text-primary me-1"></i><span th:text="${job.experienceRequired}">2 - 5 Years</span></div>
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Openings</div>
+                                        <div class="fw-bold"><i class="fa-solid fa-user-group text-info me-1"></i><span th:text="${job.openings}">4 Positions</span></div>
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Qualification</div>
+                                        <div class="fw-bold" th:text="${job.qualification}">B.Tech / MCA</div>
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Posted Date</div>
+                                        <div class="fw-bold" th:text="${#temporals.format(job.createdAt, 'dd MMM yyyy')}">10 Oct 2026</div>
+                                    </div>
+                                    <div class="col-6 col-sm-4">
+                                        <div class="small text-muted">Application Deadline</div>
+                                        <div class="fw-bold text-danger" th:text="${#temporals.format(job.deadline, 'dd MMM yyyy')}">15 Nov 2026</div>
+                                    </div>
+                                </div>
+
+                                <h6 class="fw-bold mb-2">Job Description</h6>
+                                <p class="text-muted mb-4" style="line-height: 1.7; white-space: pre-line;" th:text="${job.description}">Detailed job description...</p>
+
+                                <h6 class="fw-bold mb-2">Required Skills & Technologies</h6>
+                                <div class="d-flex flex-wrap gap-1 mb-4">
+                                    <span class="skill-tag" th:each="skill : ${#strings.arraySplit(job.requiredSkills, ',')}" th:text="${#strings.trim(skill)}">Spring Boot</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Candidate Profile Review & Submit Application -->
+                    <div class="col-lg-5">
+                        <div class="custom-card sticky-top" style="top: 90px;">
+                            <div class="custom-card-header bg-light">
+                                <h5 class="fw-bold mb-0"><i class="fa-solid fa-paper-plane me-2 text-primary"></i>Application Submission</h5>
+                            </div>
+                            <div class="custom-card-body p-4">
+                                
+                                <div th:if="${alreadyApplied}" class="alert alert-warning d-flex align-items-center mb-4">
+                                    <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+                                    <div>You have already applied for this position. Check <a th:href="@{/user/applications}" class="alert-link">My Applications</a> to track status.</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-dark mb-3">Your Application Profile Summary:</h6>
+                                    
+                                    <div class="bg-light p-3 rounded-3 border mb-3">
+                                        <div class="mb-2">
+                                            <span class="small text-muted">Candidate Name:</span>
+                                            <div class="fw-bold text-dark" th:text="${currentUser.name}">Rahul Sharma</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="small text-muted">Email ID:</span>
+                                            <div class="fw-bold text-dark" th:text="${currentUser.email}">rahul@example.com</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="small text-muted">Mobile Number:</span>
+                                            <div class="fw-bold text-dark" th:text="${currentUser.mobile}">9876543210</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <span class="small text-muted">Years of Experience:</span>
+                                            <div class="fw-bold text-dark" th:text="${currentUser.experience + ' Years'}">3.5 Years</div>
+                                        </div>
+                                        <div>
+                                            <span class="small text-muted">Attached Resume:</span>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
+                                                <span class="fw-semibold text-truncate small" th:text="${currentUser.resumeOriginalName != null ? currentUser.resumeOriginalName : 'Candidate_Resume.pdf'}">Resume.pdf</span>
+                                                <a th:if="${currentUser.resume != null}" th:href="@{'/resumes/' + ${currentUser.resume}}" target="_blank" class="badge bg-secondary-subtle text-secondary ms-auto text-decoration-none">
+                                                    View
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="small text-muted mb-3">
+                                        Need to update your details or resume before applying? <a th:href="@{/user/profile}" class="text-primary fw-semibold">Edit Profile</a>
+                                    </div>
+
+                                    <form th:if="${!alreadyApplied}" th:action="@{'/user/jobs/' + ${job.id} + '/apply'}" method="post">
+                                        <button type="submit" class="btn btn-primary-custom w-100 py-3 fw-bold rounded-pill shadow-sm">
+                                            <i class="fa-solid fa-paper-plane me-2"></i>Submit Application
+                                        </button>
+                                    </form>
+
+                                    <div th:if="${alreadyApplied}">
+                                        <button class="btn btn-secondary w-100 py-3 fw-bold rounded-pill" disabled>
+                                            <i class="fa-solid fa-circle-check me-2"></i>Application Already Submitted
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/footer :: common-footer}"></div>
+</body>
+</html>
